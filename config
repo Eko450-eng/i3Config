@@ -13,7 +13,8 @@ set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:monospace 8
+font pango:Montserrat 8
+show_marks no
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -46,12 +47,15 @@ floating_modifier $mod
 
 # start a terminal
 bindsym $mod+t exec alacritty
+bindsym $mod+Return exec alacritty
 
 # kill focused window
 bindsym $mod+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+d exec --no-startup-id dmenu_run
+#bindsym $mod+d exec --no-startup-id dmenu_run
+bindsym $mod+d exec sh ~/.config/rofi/launchers/colorful/launcher.sh
+
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
@@ -83,7 +87,7 @@ bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
 # split in horizontal orientation
-bindsym $mod+ö split h
+bindsym $mod+g split h
 
 # split in vertical orientation
 bindsym $mod+v split v
@@ -92,9 +96,9 @@ bindsym $mod+v split v
 bindsym $mod+m fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
+#bindsym $mod+s layout stacking
+#bindsym $mod+w layout tabbed
+#bindsym $mod+x layout toggle split
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
@@ -110,14 +114,14 @@ bindsym $mod+a focus parent
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
-set $ws1 "1"
-set $ws2 "2"
-set $ws3 "3"
-set $ws4 "4"
-set $ws5 "5"
-set $ws6 "6"
-set $ws7 "7"
-set $ws8 "8"
+set $ws1 "1  Main"
+set $ws2 "2  Browser"
+set $ws3 "3 Social"
+set $ws4 "4 Music"
+set $ws5 "5 "
+set $ws6 "6 "
+set $ws7 "7 "
+set $ws8 "8 "
 set $ws9 "9"
 set $ws10 "10"
 
@@ -179,11 +183,87 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-bindsym $mod+b exec brave
-bindsym $mod+e exec emacs
+
+##########################################################################
+# # class                 border  backgr. text    indicator child_border #
+# client.focused          #4c7899 #285577 #ffffff #2e9ef4   #285577      #
+# client.focused_inactive #333333 #5f676a #ffffff #484e50   #5f676a      #
+# client.unfocused        #333333 #222222 #888888 #292d2e   #222222      #
+# client.urgent           #2f343a #900000 #ffffff #900000   #900000      #
+# client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c      #
+#                                                                        #
+# client.background       #ffffff                                        #
+##########################################################################
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-        status_command i3status
+	output DP-0
+        position top
+        status_command /usr/bin/bumblebee-status \
+                -m time git pasink speedtest cpu memory pasource disk \
+                -p time.format="%H:%M" \
+                -t solarized-powerline
 }
+bar {
+	output DP-2
+        position top
+        status_command /usr/bin/bumblebee-status \
+                -m time speedtest cpu memory pasource disk \
+                -p time.format="%H:%M" \
+                -t solarized-powerline
+}
+
+#Custom executes
+exec_always feh --bg-fill ~/Pictures/animeWallpaper.jpg
+exec_always --no-startup-id compton --config /home/eko/.config/compton.conf
+exec_always exec emacs /usr/bin/emacs --daemon &
+exec_always exec xrandr --output DP-0 --right-of DP-2
+exec_always --no-startup-id /home/eko/i3-alternating-layout/alternating_layouts.py
+exec_always xset s off 
+exec_always xset -dpms
+
+default_border pixel 0
+default_floating_border pixel 1
+
+#Custom binds
+bindsym $mod+b exec brave
+bindsym $mod+e exec emacsclient -c -a 'emacs'
+bindsym $mod+f exec alacritty -e ranger
+bindsym $mod+u exec --no-startup-id compton-trans -c -10  
+bindsym $mod+i exec --no-startup-id compton-trans -c +10  
+bindsym $mod+Escape exec i3lock --color "#0a0f14" 
+bindsym $mod+c exec nautilus
+
+#Custom rules
+for_window [class=".*"] border pixel 2
+for_window [class="^.*"] border pixel 2
+for_window [class="zoom"] floating enabled
+for_window [title="Zoom Meeting"] floating disabled
+for_window [class="Gnome-screenshot"] floating enabled
+no_focus [class="zoom"]
+
+assign [class="Alacritty"] $ws1
+assign [class="Minecraft* 1.16.5"] $w1
+assign [class="Brave-browser"] $ws2
+assign [class="discord"] $ws3
+assign [title="Zoom - Free Account"] $ws5
+assign [class="firefox"] $w7
+assign [class="Prospect Mail"] $ws8
+
+workspace $ws1 output DP-0
+workspace $ws2 output DP-2
+workspace $ws3 output DP-2
+workspace $ws5 output DP-2
+
+#ws2 "2  Browser"
+#ws3 "3 Social"
+#ws4 "4 Music"
+#ws5 "5 "
+#ws6 "6 "
+#ws7 "7 "
+#ws8 "8 "
+#ws9 "9"
+#ws10 "10"
+
+
