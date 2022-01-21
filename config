@@ -87,10 +87,10 @@ bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
 # split in horizontal orientation
-bindsym $mod+g split h
+#bindsym $mod+g split h
 
 # split in vertical orientation
-bindsym $mod+v split v
+#bindsym $mod+v split v
 
 # enter fullscreen mode for the focused container
 bindsym $mod+m fullscreen toggle
@@ -114,15 +114,15 @@ bindsym $mod+a focus parent
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
-set $ws1 "1  Main"
-set $ws2 "2  Browser"
-set $ws3 "3 Social"
-set $ws4 "4 Music"
+set $ws1 "1  "
+set $ws2 "2  "
+set $ws3 "3 "
+set $ws4 "4 "
 set $ws5 "5 "
 set $ws6 "6 "
 set $ws7 "7 "
 set $ws8 "8 "
-set $ws9 "9"
+set $ws9 "9 "
 set $ws10 "10"
 
 # switch to workspace
@@ -201,7 +201,7 @@ bar {
 	output DP-0
         position top
         status_command /usr/bin/bumblebee-status \
-                -m time git pasink speedtest cpu memory pasource disk \
+                -m time cpu memory pasource disk \
                 -p time.format="%H:%M" \
                 -t solarized-powerline
 }
@@ -209,12 +209,13 @@ bar {
 	output DP-2
         position top
         status_command /usr/bin/bumblebee-status \
-                -m time speedtest cpu memory pasource disk \
+                -m time cpu memory pasource disk \
                 -p time.format="%H:%M" \
                 -t solarized-powerline
 }
 
 #Custom executes
+exec_always xrandr --output DP-0 --mode 3440x1440 --rate 144
 exec_always feh --bg-fill ~/Pictures/animeWallpaper.jpg
 exec_always --no-startup-id compton --config /home/eko/.config/compton.conf
 exec_always exec emacs /usr/bin/emacs --daemon &
@@ -222,6 +223,9 @@ exec_always exec xrandr --output DP-0 --right-of DP-2
 exec_always --no-startup-id /home/eko/i3-alternating-layout/alternating_layouts.py
 exec_always xset s off 
 exec_always xset -dpms
+exec_always sshfs -p 24 ekrem@192.168.178.71:/upload /mnt/files
+exec_always xinput --set-prop 15 "libinput Accel Profile Enabled" 0, 1
+exec_always xrandr --output DP-0 --mod 3440x1440 --rate 144
 
 default_border pixel 0
 default_floating_border pixel 1
@@ -232,24 +236,32 @@ bindsym $mod+e exec emacsclient -c -a 'emacs'
 bindsym $mod+f exec alacritty -e ranger
 bindsym $mod+u exec --no-startup-id compton-trans -c -10  
 bindsym $mod+i exec --no-startup-id compton-trans -c +10  
-bindsym $mod+Escape exec i3lock --color "#0a0f14" 
-bindsym $mod+c exec nautilus
+bindsym $mod+p exec --no-startup-id ~/gd/gdlauncher
+bindsym $mod+Escape exec i3lock --color "#0a0f14" && xset dpms force off  
+bindsym $mod+Shift+D exec clipmenu -i -fn Terminus:size=8 -nb '#002b36' -nf '#839496' -sb '#073642' -sf '#93a1a1'
+bindsym $mod+Shift+x exec playerctl previous
+bindsym $mod+c exec playerctl play-pause
+bindsym $mod+Shift+v exec playerctl next
 
 #Custom rules
 for_window [class=".*"] border pixel 2
 for_window [class="^.*"] border pixel 2
 for_window [class="zoom"] floating enabled
 for_window [title="Zoom Meeting"] floating disabled
+for_window [title="Zoom - Free Account"] floating disabled
 for_window [class="Gnome-screenshot"] floating enabled
 no_focus [class="zoom"]
 
-assign [class="Alacritty"] $ws1
-assign [class="Minecraft* 1.16.5"] $w1
+#assign [class="Alacritty"] $ws1
+assign [class="Minecraft* 1.16.5"] $ws1
 assign [class="Brave-browser"] $ws2
 assign [class="discord"] $ws3
-assign [title="Zoom - Free Account"] $ws5
-assign [class="firefox"] $w7
-assign [class="Prospect Mail"] $ws8
+assign [class="Slack"] $ws5
+assign [class="firefox"] $ws7
+assign [class="crx_faolnafnngnfdaknnbpnkhgohbobgegn"] $ws8
+assign [title="Zoom - Free Account"] $ws10
+assign [class='FreeCAD'] $ws6
+assign [class="input-remapper-gtk"]  $ws10
 
 workspace $ws1 output DP-0
 workspace $ws2 output DP-2
